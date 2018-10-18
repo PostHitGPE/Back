@@ -1,0 +1,20 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Mathieu
+ * Date: 13/11/2017
+ * Time: 22:59
+ */
+
+namespace Entities;
+
+
+class StatusType
+{
+    const STATUS_TYPE_WAITING_VALIDATION_REPORT = "WAITING VALIDATION REPORT";
+    const STATUS_TYPE_REPORTED = "REPORTED";
+    const STATUS_TYPE_DELETED = "DELETED";
+    const STATUS_TYPE_BANISHED = "BANISHED";
+    const STATUS_TYPE_VALIDATED = "VALIDATED";
+    const STATUS_TYPE_PENDING_VALIDATION = "PENDING VALIDATION";
+}
