@@ -18,7 +18,8 @@ class PostHit extends DataBase
     const POST_HIT_RESPONSE_NOT_EXIST = "POST_HIT_RESPONSE_NOT_EXIST";
     const POST_HIT_RESPONSE_EXIST = "POST_HIT_RESPONSE_EXIST";
     const POST_HIT_MESSAGE_EXIST_ON_OTHER = "POST_HIT_MESSAGE_EXIST_ON_OTHER";
-    
+    const POST_HIT_DO_NOT_EXIST = "THIS POST HIT DO NOT EXIST";
+
     /**
      * used in $app->post('/delete/post_hit' ...
      */
@@ -140,8 +141,8 @@ class PostHit extends DataBase
             $stmt->bindParam(1, $data["display_board"]["id"], PDO::PARAM_INT);
             $stmt->bindParam(2, $data["post_hit"]["latitude"], PDO::PARAM_STR);
             $stmt->bindParam(3, $data["post_hit"]["longitude"], PDO::PARAM_STR);
-            $stmt->bindParam(4, $data["post_hit"]["axeXYZ"], PDO::PARAM_STR);
-            $stmt->bindParam(5, $data["post_hit"]["message"], PDO::PARAM_STR);
+            $stmt->bindParam(4, $data["post_hit"]["message"], PDO::PARAM_STR);
+            $stmt->bindParam(5, $data["post_hit"]["axeXYZ"], PDO::PARAM_STR);
             $stmt->bindParam(6, $user->id, PDO::PARAM_INT);
             $stmt->bindParam(7, $status , PDO::PARAM_STR);
             try {
@@ -209,5 +210,19 @@ class PostHit extends DataBase
         }
         $count = $stmt->rowCount();
         return ($count);
+    }
+
+    function updatePostHitStatus($postHitId, $status) {
+        $db = parent::$dbConnection;
+        $stmt = $db->prepare("UPDATE post_hit SET status_id = (SELECT id FROM status WHERE `name` = ?) WHERE id = ?");
+        $stmt->bindParam(1, $status, PDO::PARAM_STR);
+        $stmt->bindParam(2, $postHitId, PDO::PARAM_INT);
+        try {
+            $result = $stmt->execute();
+            $id = $db->lastInsertId();
+            return $id;
+        } catch (PDOException $exception) {
+            return ($exception);
+        }
     }
 }

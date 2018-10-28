@@ -24,6 +24,12 @@ class DataChecker
             && isset($data["userToDelete"]["id"]));
     }
 
+    static function hasReportingData($data)
+    {
+        return (isset($data["reporting"]["post_hit_id"])
+                && isset($data["reporting"]["comment"]));
+    }
+
     static function hasUser($data)
     {
         return (isset($data["user"]));
