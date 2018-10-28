@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 <?php
 /**
  * Created by PhpStorm.
@@ -14,21 +13,4 @@ class OpinionType
 {
     const OPINION_TYPE_LIKE = "LIKE";
     const OPINION_TYPE_DISLIKE = "DISLIKE";
-=======
-<?php
-/**
- * Created by PhpStorm.
- * User: Mathieu
- * Date: 13/11/2017
- * Time: 22:58
- */
-
-namespace Entities;
-
-
-class OpinionType
-{
-    const OPINION_TYPE_LIKE = "LIKE";
-    const OPINION_TYPE_DISLIKE = "DISLIKE";
->>>>>>> Stashed changes
 }
