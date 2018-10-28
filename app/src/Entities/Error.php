@@ -1,14 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Mathieu
- * Date: 22/11/2017
- * Time: 14:36
- */
 
 namespace Entities;
 
 
+/**
+ * Class Error
+ * @package Entities
+ * This are different errors often used for the API returns when errors occur;
+ */
 class Error
 {
     const ERROR_MISSING_PARAMETERS = "Parameters are missing for the request";

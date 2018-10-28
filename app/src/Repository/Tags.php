@@ -12,8 +12,17 @@ namespace Repository;
 use Entities\DataBase;
 use PDO;
 
+/**
+ * Class Tags
+ * @package Repository
+ * Repository of Tags where all the methods linked directly to tags for the post-hit are codded
+ */
 class Tags extends DataBase {
 
+    /**
+     * @param $name
+     * @return mixed
+     */
     public function findTagByName($name) {
         $db = parent::$dbConnection;
         $stmt = $db->prepare("SELECT * FROM tags WHERE name = ?");

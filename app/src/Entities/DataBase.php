@@ -5,14 +5,42 @@ namespace Entities;
 use PDO;
 use PDOException;
 
+/**
+ * Class DataBase
+ * @package Entities
+ * This class is used to set all we need to use the Database
+ * It is extended by all the repositories to have the availability to use the Database connection
+ */
 class DataBase {
 
-    //pass $c9 to false to get default local db parameters loaded.
-    //pass $c9 to true to get c9 parameters loaded.
+
+    /**
+     * @var bool
+     * used to set which environment we use (local or C9 cloud server)
+     */
     private $c9 = true;
+
+    /**
+     * @var array
+     * example of using for the array:
+     * $this->dsn["host"] = 'localhost';
+     * $this->dsn["port"] = "3306";
+     * $this->dsn["user"] = 'root';
+     * $this->dsn["pass"] = 'root';
+     * $this->dsn["name"] = 'c9';
+     */
     private $dsn = [];
+
+    /**
+     * @var null
+     * Setted null by default, this variable static will be used to join the db
+     */
     protected static $dbConnection = null;
 
+    /**
+     * DataBase constructor.
+     * configure the connection for the DB by singleton depending the environment
+     */
     public function __construct()
     {
         ($this->c9) ? $this->initC9() : $this->initDefault();
@@ -29,7 +57,10 @@ class DataBase {
         }
     }
 
-    // return local db parameters
+    /**
+     * Set the variable dsn
+     * default initialisation is for localhost db connection.
+     */
     private function initDefault() {
         $this->dsn["host"] = 'localhost';
         $this->dsn["port"] = "3306";
@@ -38,7 +69,10 @@ class DataBase {
         $this->dsn["name"] = 'c9';
     }
 
-    // return c9 db paramaters
+    /**
+     * Set the variable dsn
+     * other setting for the dsn when it's not localhost but server
+     */
     private function initC9() {
         $this->dsn["host"] = getenv('IP');
         $this->dsn["port"] = "3306";
