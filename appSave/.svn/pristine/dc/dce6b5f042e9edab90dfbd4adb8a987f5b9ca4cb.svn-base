@@ -1,0 +1,43 @@
+/*
+** Full dummy model to paste in postman.
+** API accept a full model format and use only
+** needed properties.
+** Change values in accordance to your needs...
+*/
+{
+    "data": {
+        "user": {
+            "id": "",
+            "pseudo": "dummy",
+            "password": "dummy",
+            "email": "dummy@etna-alternance.net",
+            "status": 0,
+            "role": 0
+        },
+        "display_board": {
+            "id": "2",
+            "name": "dummy board",
+            "description": "dummy board description",
+            "latitude": "48.8134007",
+            "longitude": "2.3932467",
+            "altitude": 10.0,
+            "status": 5
+        },
+        "post_hit": {
+            "id": 0,
+            "latitude": "10561.8448",
+            "longitude": "10561.8448",
+            "axeXYZ": "840,84,84",
+            "message": "dummy message",
+            "reputation": 50,
+            "display_board_id": 0,
+            "status": 5,
+            "user": 0
+        },
+        "tags": [
+            "machin",
+            "nanananaan",
+            "new try post hit"
+        ]
+    }
+}

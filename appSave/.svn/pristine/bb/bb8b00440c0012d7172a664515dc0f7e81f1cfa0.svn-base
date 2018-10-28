@@ -1,0 +1,32 @@
+<?php
+
+namespace Test;
+
+use GuzzleHttp\Client;
+
+class PosthitTest extends \PHPUnit_Framework_TestCase
+{
+    private function getRootUrl($c9 = false) {
+        return ($c9) ? "https://post-hit-posthit.c9users.io/public/api" : "http://localhost/PostHitAPI/public/api";
+    }
+
+    private function getPostHitRoutes() {
+        return [
+            "POST" => "/add/post_hit", // POST one Posthit
+            "GET" => "/post_hits", // GET all Posthit
+            "PUT" => "/post_hit" // PUT one posthit
+        ];
+    }
+
+    public function testPosthitGet() {// create our http client (Guzzle)
+        $client = new Client($this->getRootUrl(), []);
+        $model = json_decode(file_get_contents('../model.json'));
+        $model["data"]["post_hit"]["message"] = "test posthit";
+        $routes = $this->getPostHitRoutes();
+        $request = $client->post($routes["POST"], null, json_encode($model));
+        $response = $request->send();    
+        $this->assertEquals(200, $response->getStatusCode());
+        $data = json_decode($response->getBody(true), true);
+        $this->assertArrayHasKey('nickname', $data);
+    }
+}

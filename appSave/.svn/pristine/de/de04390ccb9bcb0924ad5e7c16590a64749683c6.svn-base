@@ -1,0 +1,42 @@
+<?php
+header('Access-Control-Allow-Origin: *');
+
+use \Psr\Http\Message\ServerRequestInterface as Request;
+use \Psr\Http\Message\ResponseInterface as Response;
+use \Repository\User as User;
+
+$app->group('/api', function () use ($app) {
+
+    new \Entities\DataBase();
+
+    /*
+    ** POST on USER
+    ** optionnel: 
+    ** user: {
+    **  admin: true 
+    ** }
+    ** user.role === ROLE_ADMIN
+    ** if user.pseudo || user.email => already token => send error
+    */
+
+    $app->post('/add/user', function (Request $request, Response $response) {
+        $data = json_decode($request->getBody(), true);
+        if (!isset($data["data"]))
+            return $response = $response->withJson(["code" => 404, "type" => "error", "message" => "data not found", "data" => []], 404);
+        $data = $data["data"];
+        $userRepository = new User();
+        $admin = isset($data["admin"]) && $data["admin"];
+        try {
+            $res = $userRepository->post($data, Entities\StatusType::STATUS_TYPE_VALIDATED, $admin);
+        } catch (PDOException $e) {
+            return ($e);
+        }
+        if (is_null($res))
+            return $response = $response->withJson(["code" => 404, "type" => "error", "message" => "Invalid data and parameters", "data" => []], 404);
+        if ($res === User::USER_ALREADY_EXIST)
+            return $response->withJson(["code" => 404, "type" => "error", "message" => User::USER_ALREADY_EXIST, "data" => []], 404);
+        if ($res instanceof PDOException)
+            return $response->withJson(["code" => 409, "type" => "error", "message" => "The user couldn't be added : ERROR PDO error n°" . $res->getCode() . " " . $res->getMessage(), "data" => []], 409);
+        return $response->withJson(["code" => 200, "type" => "success", "message" => "User successfully added", "data" => []], 200);
+    });
+});
