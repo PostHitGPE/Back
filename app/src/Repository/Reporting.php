@@ -8,7 +8,6 @@
 
 namespace Repository;
 
-
 use Entities\DataBase;
 use PDO;
 use PDOException;
@@ -52,6 +51,4 @@ class Reporting extends DataBase
                 return ($exception);
             }
         }
-
-
 }

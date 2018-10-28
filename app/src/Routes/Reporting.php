@@ -15,6 +15,7 @@ $app->group('/api', function () use ($app) {
 
     new \Entities\DataBase();
 
+
     $app->post('/reporting', function (Request $request, Response $response) {
         $data = json_decode($request->getBody(), true);
         if (!Data::hasData($data))
