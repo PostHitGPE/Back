@@ -213,6 +213,16 @@ class PostHit extends DataBase
     }
 
     function updatePostHitStatus($postHitId, $status) {
-
+        $db = parent::$dbConnection;
+        $stmt = $db->prepare("UPDATE post_hit SET status_id = (SELECT id FROM status WHERE `name` = ?) WHERE id = ?");
+        $stmt->bindParam(1, $status, PDO::PARAM_STR);
+        $stmt->bindParam(2, $postHitId, PDO::PARAM_INT);
+        try {
+            $result = $stmt->execute();
+            $id = $db->lastInsertId();
+            return $id;
+        } catch (PDOException $exception) {
+            return ($exception);
+        }
     }
 }

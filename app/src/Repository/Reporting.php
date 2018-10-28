@@ -10,6 +10,8 @@ namespace Repository;
 
 
 use Entities\DataBase;
+use PDO;
+use PDOException;
 
 class Reporting extends DataBase
 {
@@ -17,19 +19,19 @@ class Reporting extends DataBase
 
     function addReporting($data, $user)
     {
-        if($this->reportingAlreadyExists($data["reporting"]["post_hit_id"], $user->getId()) == self::REPORTING_ALREADY_EXISTS) {
+        if($this->reportingAlreadyExists($data["reporting"]["post_hit_id"], $user->id) == self::REPORTING_ALREADY_EXISTS) {
             return (self::REPORTING_ALREADY_EXISTS);
         }
             $db = parent::$dbConnection;
             $stmt = $db->prepare("INSERT INTO reporting (post_hit_id, user_id, comment) values (?, ?, ?)");
             $stmt->bindParam(1, $data["reporting"]["post_hit_id"], PDO::PARAM_INT);
-            $stmt->bindParam(2, $user->getId(), PDO::PARAM_STR);
+            $stmt->bindParam(2, $user->id, PDO::PARAM_STR);
             $stmt->bindParam(3, $data["reporting"]["comment"], PDO::PARAM_STR);
             try {
                 $stmt->execute();
                 $lii = $db->lastInsertId();
                 return $lii;
-            } catch (\PDOException $exception) {
+            } catch (PDOException $exception) {
                 return ($exception);
             }
         }
@@ -46,7 +48,7 @@ class Reporting extends DataBase
                     return (self::REPORTING_ALREADY_EXISTS);
                 else
                     return (false);
-            } catch (\PDOException $exception) {
+            } catch (PDOException $exception) {
                 return ($exception);
             }
         }

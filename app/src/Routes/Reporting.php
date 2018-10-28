@@ -10,7 +10,6 @@ use \Psr\Http\Message\ResponseInterface as Response;
 use Repository\PostHit;
 use Entities\DataChecker as Data;
 use Entities\Error as Err;
-use Repository\Reporting;
 
 $app->group('/api', function () use ($app) {
 
@@ -23,10 +22,10 @@ $app->group('/api', function () use ($app) {
         if (!Data::hasReportingData($data)) {
             return $response = $response->withJson(["code" => 400, "type" => "error", "message" => "comment or post hit id not found", "data" => $data], 400);
         }
-        $userRepository = new User();
-        $postHitRepository = new PostHit();
-        $reportingRepository = new Reporting();
-        $user = $userRepository->getUser($data);
+        $userRepository = new \Repository\User();
+        $postHitRepository = new \Repository\PostHit();
+        $reportingRepository = new \Repository\Reporting();
+        $user = $userRepository->getUser($data, StatusType::STATUS_TYPE_VALIDATED);
         if ($user == null) {
             return $response->withJson(["code" => 401, "type" => "error", "message" => \Repository\User::USER_BAD_CREDENTIALS . " OR " . \Repository\User::USER_DO_NOT_EXIST, "data" => $data], 401);
         }
@@ -49,18 +48,10 @@ $app->group('/api', function () use ($app) {
             return $response = $response->withJson(["code" => 404, "type" => "error", "message" => $result, "data" => $data], 404);
         }
 
-        $postHitRepository->updatePostHitStatus($data["reporting"]["post_hit_id"], StatusType::STATUS_TYPE_WAITING_VALIDATION_REPORT);
-        try {
-            $res = $userRepository->post($data, Entities\StatusType::STATUS_TYPE_VALIDATED, Data::isSendByAdmin($data));
-        } catch (PDOException $e) {
-            return $response = $response->withJson(["code" => 500, "type" => Err::ERROR_PDO, "message" => "The user couldn't be added : ERROR PDO error n°" . $e->getCode() . " " . $e->getMessage(), "data" => []], 404);
+        $result = $postHitRepository->updatePostHitStatus($data["reporting"]["post_hit_id"], StatusType::STATUS_TYPE_WAITING_VALIDATION_REPORT);
+        if ($result instanceof \Exception) {
+            return $response = $response->withJson(["code" => 500, "type" => Err::ERROR_PDO, "message" => "The post hit's status couldn't be updated : ERROR PDO error n°" . $result->getCode() . " " . $result->getMessage(), "data" => []], 404);
         }
-        if ($res === User::USER_ALREADY_EXIST)
-            return $response->withJson(["code" => 404, "type" => "error", "message" => User::USER_ALREADY_EXIST, "data" => []], 404);
-        if (is_null($res))
-            return $response = $response->withJson(["code" => 404, "type" => "error", "message" => "Invalid data and parameters", "data" => [$res => $data]], 404);
-        if ($res instanceof PDOException)
-            return $response->withJson(["code" => 409, "type" => "error", "message" => "The user couldn't be added : ERROR PDO error n°" . $res->getCode() . " " . $res->getMessage(), "data" => []], 409);
-        return $response->withJson(["code" => 200, "type" => "success", "message" => "User successfully added", "data" => ["last_insert_id" => $res]], 200);
+        return $response->withJson(["code" => 200, "type" => "success", "message" => "Report done successfully", "data" => []], 200);
     });
 });
