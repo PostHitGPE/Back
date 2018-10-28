@@ -1,5 +1,5 @@
 .idea
-./app/.idea/
-./app/.svn/
-./app/vendor/
-./app/composer.lock
+app/.idea/
+app/.svn/
+app/vendor/
+app/composer.lock
