@@ -21,6 +21,8 @@ class User extends Database
 {
 
     const USER_ALREADY_EXIST = "EMAIL OR PSEUDO ALREADY EXIST";
+    const USER_DO_NOT_EXIST = "USER DO NOT EXIST";
+    const USER_BAD_CREDENTIALS = "USER_BAD_CREDENTIALS";
 
     /*
      ** Repository\User::isExistingEmailOrPseudo check if

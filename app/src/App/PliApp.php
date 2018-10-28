@@ -17,9 +17,10 @@ class PliApp
         $app = new \Slim\App($c);
         unset($app->getContainer()['errorHandler']);
         unset($app->getContainer()['phpErrorHandler']);
-        require '../src/Routes/Posthit.php';
-        require '../src/Routes/User.php';
-        require '../src/Routes/DisplayBoard.php';
+        require __DIR__.'/../Routes/Posthit.php';
+        require __DIR__.'/../Routes/User.php';
+        require __DIR__.'/../Routes/DisplayBoard.php';
+        require __DIR__.'/../Routes/Reporting.php';
         $this->app = $app;
     }
 

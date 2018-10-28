@@ -11,5 +11,7 @@ namespace Entities;
 
 class Reporting
 {
-
+    private $post_it_id;
+    private $user_id;
+    private $comment;
 }

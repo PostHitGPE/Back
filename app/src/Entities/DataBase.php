@@ -35,7 +35,7 @@ class DataBase {
         $this->dsn["port"] = "3306";
         $this->dsn["user"] = 'root';
         $this->dsn["pass"] = 'root';
-        $this->dsn["name"] = 'posthit';
+        $this->dsn["name"] = 'c9';
     }
 
     // return c9 db paramaters

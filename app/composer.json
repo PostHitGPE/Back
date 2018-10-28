@@ -19,7 +19,8 @@
       "Entities\\" : "src/Entities/",
       "Repository\\" : "src/Repository/",
       "App\\": "src/App/",
-      "Test\\": "test/"
+      "Test\\": "test/",
+      "Routes\\": "src/Routes/"
     }
   }
 }
