@@ -9,7 +9,7 @@ class DataBase {
 
     //pass $c9 to false to get default local db parameters loaded.
     //pass $c9 to true to get c9 parameters loaded.
-    private $c9 = true;
+    private $c9 = false;
     private $dsn = [];
     protected static $dbConnection = null;
 
