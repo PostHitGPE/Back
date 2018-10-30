@@ -1,3 +1,0 @@
-#!/bin/bash
-
-./vendor/phpunit/phpunit/phpunit test/PosthitTest.php >> test"$(date +'%d%m%Y%H%M_%S')".log
