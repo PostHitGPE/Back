@@ -1,13 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Mathieu
- * Date: 13/11/2017
- * Time: 22:59
- */
 
 namespace Entities;
 
+/**
+ * Class StatusType
+ * @package Entities
+ * These constants are used to easily code and find or use the status we have in database
+ */
 
 class StatusType
 {

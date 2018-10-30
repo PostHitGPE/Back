@@ -11,10 +11,42 @@ use Repository\PostHit;
 use Entities\DataChecker as Data;
 use Entities\Error as Err;
 
+/**
+ * /api is the beginning of routes where it's being catched
+ * Then if follows the type of request and the URL specified
+ */
+
 $app->group('/api', function () use ($app) {
 
     new \Entities\DataBase();
 
+    /**
+     * /api/reporting
+     * Method HTTP: POST
+     *
+     * Application/Json expected in request:
+     *
+     * {
+     *  "data":{
+     *      "user":{
+     *          "id": int,
+     *          "pseudo": string ,
+     *          "password": string
+     *      },
+     *      "reporting":{
+     *          "post_hit_id": string,
+     *          "message": string
+     *      }
+     *  }
+     * }
+     *
+     * @return Application/Json
+     * Successfull return:
+     *(["code" => 200, "type" => "success", "message" => "Report done successfully", "data" => []], 200);
+     *
+     * This route add a reporting in the database when a post hit is not appropriate by a user.
+     * It also changes the status of the post hit to target it when we look in the database
+     */
 
     $app->post('/reporting', function (Request $request, Response $response) {
         $data = json_decode($request->getBody(), true);

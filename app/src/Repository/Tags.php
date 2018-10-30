@@ -12,8 +12,18 @@ namespace Repository;
 use Entities\DataBase;
 use PDO;
 
+/**
+ * Class Tags
+ * @package Repository
+ * Repository of Tags where all the methods linked directly to tags for the post-hit are codded
+ */
 class Tags extends DataBase {
 
+    /**
+     * @param string $name
+     * @return PDO::FETCH_OBJ Tag
+     * This function will find a tag which is strictly egual to the string's name passed by parameter
+     */
     public function findTagByName($name) {
         $db = parent::$dbConnection;
         $stmt = $db->prepare("SELECT * FROM tags WHERE name = ?");
@@ -23,6 +33,12 @@ class Tags extends DataBase {
         return ($tag);
     }
 
+    /**
+     * @param int $tagId
+     * @param int $postHitId
+     * @return PDO::FETCH_OBJ Tags
+     * This function find the post_hit's tag by the tag's id and the postHit's id
+     */
     function findPostItTagsByIds($tagId, $postHitId) {
         $db = parent::$dbConnection;
         $stmt = $db->prepare("SELECT * FROM post_hit_tags WHERE tag_id = ? AND post_hit_id = ?");
@@ -33,14 +49,10 @@ class Tags extends DataBase {
         return ($postHitTag);
     }
 
-    function insertNewTag($tag) {
-        $db = parent::$dbConnection;
-        $stmt = $db->prepare("INSERT INTO tags (name) VALUES(?)");
-        $stmt->bindParam(1, $tag, PDO::PARAM_STR);
-        $stmt->execute();
-        return ($db->lastInsertId());
-    }
-
+    /**
+     * @param $postItId
+     * @param $tagId
+     */
     function insertPostItTag($postItId, $tagId)
     {
         $db = parent::$dbConnection;
@@ -50,6 +62,25 @@ class Tags extends DataBase {
         $stmt->execute();
     }
 
+    /**
+     * @param string $tag
+     * @return int id
+     * This function insert new tag in the database by a string in parameter
+     */
+    function insertNewTag($tag) {
+        $db = parent::$dbConnection;
+        $stmt = $db->prepare("INSERT INTO tags (name) VALUES(?)");
+        $stmt->bindParam(1, $tag, PDO::PARAM_STR);
+        $stmt->execute();
+        return ($db->lastInsertId());
+    }
+
+    /**
+     * @param PDO::FETCH_OBJ PostHit $postHit
+     * @return mixed
+     * @throws \Exception
+     * This function will delete all the tags related to a posthit (link only)
+     */
     function removeAllPostHitTags($postHit) {
         $db = parent::$dbConnection;
         $stmt = $db->prepare("DELETE FROM post_hit_tags WHERE post_hit_id = ?");
@@ -63,6 +94,11 @@ class Tags extends DataBase {
         }
     }
 
+    /**
+     * @param PDO::FETCH_OBJ $postHit
+     * @return array PDO::FETCH_OBJ tags |\PDOException
+     * This function return an array of tags depending of a postHit
+     */
     function getPostHitTags($postHit) {
         $db = parent::$dbConnection;
         $stmt = $db->prepare("SELECT tags.name FROM tags INNER JOIN post_hit_tags ON tags.id = post_hit_tags.tag_id WHERE post_hit_tags.post_hit_id = ?");

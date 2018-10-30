@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Mathieu
- * Date: 13/11/2017
- * Time: 22:50
- */
 
 namespace Repository;
 
@@ -13,6 +7,11 @@ use Repository\Tags;
 use PDO;
 use PDOException;
 
+/**
+ * Class PostHit
+ * @package Repository
+ * Repository of PostHit where all the methods linked directly to PostHit are codded
+ */
 class PostHit extends DataBase
 {
     const POST_HIT_RESPONSE_NOT_EXIST = "POST_HIT_RESPONSE_NOT_EXIST";
@@ -20,8 +19,12 @@ class PostHit extends DataBase
     const POST_HIT_MESSAGE_EXIST_ON_OTHER = "POST_HIT_MESSAGE_EXIST_ON_OTHER";
     const POST_HIT_DO_NOT_EXIST = "THIS POST HIT DO NOT EXIST";
 
+
     /**
-     * used in $app->post('/delete/post_hit' ...
+     * @param int $postHitId
+     * @return PDO::FETCH_OBJ postHit
+     * @throws \Exception
+     * This function find a postHit in the Database searching by its ID
      */
     function getById($postHitId) {
 
@@ -36,10 +39,15 @@ class PostHit extends DataBase
         }
     }
 
+
     /**
-     * used in $app->put('/post_hit' ...
+     * @param int $boardId
+     * @param int $userId
+     * @return PDO::FETCH_OBJ postHit |PDOException
+     * This function get postHit finding it by the board's id and the user's id
      */
     function getPostHitByBoardAndUser($boardId, $userId) {
+
         $db =  parent::$dbConnection;
         $stmt = $db->prepare("SELECT post_hit.id as id, display_board_id, axeXYZ, post_hit.latitude as latitude, post_hit.longitude as longitude, message, reputation, status.name as status FROM post_hit INNER JOIN status ON post_hit.status_id = status.id WHERE post_hit.display_board_id = ? AND post_hit.user_id = ? ");
         $stmt->bindParam(1, $boardId, PDO::PARAM_INT);
@@ -52,8 +60,11 @@ class PostHit extends DataBase
         }
     }
 
-   /**
-     * used in $app->post('/delete/user' ...
+
+    /**
+     * @param int $userId
+     * @return PDO::FETCH_ARRAY | PDO::FETCH_OBJ postHit | PDOException
+     * This function get PostHits by User's id
      */
     function getByUserId($userId) {
         $db =  parent::$dbConnection;
@@ -69,7 +80,10 @@ class PostHit extends DataBase
 
 
     /**
-     * Used in $app->put('/post_hit' ...
+     * @param array $data
+     * @param PDO::FETCH_OBJ PostHit $postHit
+     * @return bool false | PDOException | string | int
+     * This function update the message of a postHit and return its id when it's successfully updated
      */
     function updateMessagePostHit($data, $postHit) {
         if (isset($data["post_hit"]["message"]) && !empty($postHit)) {
@@ -94,14 +108,15 @@ class PostHit extends DataBase
         return (false);
     }
 
-    /*
-    ** used in insertNewPostHit
-    **
-    ** return self::POST_HIT_RESPONSE_EXIST || self::POST_HIT_RESPONSE_NOT_EXIST
-    ** depend on: 
-    **  1 - display board && message == exist
-    **  2 - display board && user == exist
-    */
+
+    /**
+     * @param int $userId
+     * @param int $displayBoardId
+     * @param string $message
+     * @return PDOException | string | string
+     * This function verify if a postHit exist in the database searching by its user's id, display board's id and message
+     * and return a string depending if it has been found or not
+     */
     function postItExistByUserIdAndBoardId($userId, $displayBoardId, $message) {
         $db = parent::$dbConnection;
         $stmt = $db->prepare("SELECT COUNT(*) FROM post_hit WHERE display_board_id = ? AND (user_id = ? OR message = ?)");
@@ -121,14 +136,13 @@ class PostHit extends DataBase
     }
 
 
-    /*
-    ** used in $app->post('/add/post_hit' ...
-    **
-    ** insertNewPostHit reject the request if:
-    **  1 - display board && message
-    **  2 - display board && user
-    ** see postItExistByUserIdAndBoardId    
-    */
+    /**
+     * @param array $data
+     * @param PDO::FETCH_OBJ User $user
+     * @return null |PDOException | PDOException | string | int
+     * This function insert a new postHit with a default reputation of value 50 depending of the selected board and user.
+     * It returns the Id of the inserted Post Hit and the insertion is successful
+     */
     function insertNewPostHit($data, $user) {
         $status = \Entities\StatusType::STATUS_TYPE_VALIDATED;
         if (isset($data["display_board"]) && isset($data["display_board"]["id"]) && isset($data["post_hit"]) && isset($data["post_hit"]["latitude"]) && isset($data["post_hit"]["longitude"]) && isset($data["post_hit"]["axeXYZ"]) && isset($data["post_hit"]["message"])) {
@@ -156,8 +170,12 @@ class PostHit extends DataBase
         return null;
     }
 
+
     /**
-     * used in updateMessagePostHit
+     * @param string $message
+     * @param int $boardId
+     * @return PDOException | PDO::FETCH_OBJ postHit
+     * This function return a Posthit depending of its message and board's id
      */
     function getPostHitByMessageAndBoardId($message, $boardId) {
         $db = parent::$dbConnection;
@@ -174,7 +192,9 @@ class PostHit extends DataBase
     }
 
     /**
-     * used in $app->post('/post_hits' ...
+     * @param int $displayBoardId
+     * @return array PDO::FETCH_OBJ postHit
+     * This function return an array of postHit depending of a displayBoard's id
      */
     function getAllPostHitFromDisplayBoard($displayBoardId) {
         $db = parent::$dbConnection;
@@ -184,9 +204,13 @@ class PostHit extends DataBase
         $postHits = $stmt->fetchAll(PDO::FETCH_OBJ);
         return ($postHits);
     }
-    
+
+
     /**
-     * used in tests
+     * @param int $id
+     * @return int
+     * @throws \Exception
+     * This function return a integer of the number of postHit deleted when the operation is successful.
      */
     function deleteById($id) {
         $db = parent::$dbConnection;
@@ -212,6 +236,13 @@ class PostHit extends DataBase
         return ($count);
     }
 
+    /**
+     * @param int $postHitId
+     * @param string $status
+     * @return PDOException | int
+     * This function update the postHit's status, used for example when there is a report on it or when it would be banned
+     * It returns the id of the postHit when the operation is successful
+     */
     function updatePostHitStatus($postHitId, $status) {
         $db = parent::$dbConnection;
         $stmt = $db->prepare("UPDATE post_hit SET status_id = (SELECT id FROM status WHERE `name` = ?) WHERE id = ?");

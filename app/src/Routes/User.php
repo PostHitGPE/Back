@@ -10,18 +10,35 @@ use Entities\DataChecker as Data;
 use Entities\Error as Err;
 use Repository\PostHit;
 
+/**
+ * /api is the beginning of routes where it's being catched
+ * Then if follows the type of request and the URL specified
+ */
 $app->group('/api', function () use ($app) {
 
     new \Entities\DataBase();
 
-    /*
-     ** POST on USER
-     ** optionnel: 
-     ** user: {
-     **  admin: true 
-     ** }
-     ** user.role === ROLE_ADMIN
-     ** if user.pseudo || user.email => already token => send error
+    /**
+     * /api/reporting
+     * Method HTTP: POST
+     *
+     * Application/Json expected in request:
+     *
+     * {
+     *  "data":{
+     *      "user":{
+     *          "pseudo": string ,
+     *          "password": string
+     *      }
+     *  }
+     * }
+     *
+     * @return Application/Json
+     * Successfull return:
+     *(["code" => 200, "type" => "success", "message" => "User successfully added", "data" => ["last_insert_id" => $res]], 200)
+     *  $res: int
+     *
+     * This route add a User a verify first if the pseudo is already taken by somebody else
      */
     $app->post('/add/user', function (Request $request, Response $response) {
         $data = json_decode($request->getBody(), true);
@@ -42,6 +59,32 @@ $app->group('/api', function () use ($app) {
         return $response->withJson(["code" => 200, "type" => "success", "message" => "User successfully added", "data" => ["last_insert_id" => $res]], 200);
     });
 
+
+    /**
+     * /api/reporting
+     * Method HTTP: POST
+     *
+     * Application/Json expected in request:
+     *
+     * {
+     *  "data":{
+     *      "user":{
+     *          "role": string
+     *      },
+     *      "userToDelete":{
+     *      "id": string
+     *      }
+     *  }
+     * }
+     *
+     * @return Application/Json
+     * Successfull return:
+     *(["code" => 200, "type" => "success", "message" => "User successfully added", "data" => ["last_insert_id" => $res]], 200)
+     *  $res: int
+     *
+     * This route delete a User and verify first if it's an Admin Request
+     * For the moment it was just a test route.
+     */
     $app->post('/delete/user', function (Request $request, Response $response) {
         $data = json_decode($request->getBody(), true);
         if (!Data::hasData($data))
@@ -74,7 +117,7 @@ $app->group('/api', function () use ($app) {
         }
         $data["user"] = $data["userToDelete"];
         try {
-            $res = $userRepository->delete($data, Entities\StatusType::STATUS_TYPE_VALIDATED);
+            $res = $userRepository->delete($data, \Entities\StatusType::STATUS_TYPE_VALIDATED);
         } catch (PDOException $e) {
             return $response = $response->withJson(["code" => 500, "type" => Err::ERROR_PDO, "message" => "The user couldn't be deleted : ERROR PDO error n°" . $e->getCode() . " " . $e->getMessage(), "data" => []], 500);
         }

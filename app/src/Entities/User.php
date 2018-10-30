@@ -1,36 +1,56 @@
 <?php
 
-
-/**
- * Created by PhpStorm.
- * User: Mathieu
- * Date: 08/11/2017
- * Time: 14:42
- */
-
 namespace Entities;
 
+/**
+ * Class User
+ * @package Entities
+ */
 class User
 {
 
+    /**
+     * constant of role ADMIN (role class coming...)
+     */
     const ROLE_ADMIN = "ADMIN";
+    /**
+     * constant of role USER (role class coming...)
+     */
     const ROLE_USER = "USER";
 
+    /**
+     * @var int
+     */
     private $id;
+    /**
+     * @var string
+     */
     private $pseudo;
+    /**
+     * @var string
+     */
     private $email;
+    /**
+     * @var string
+     */
     private $password;
+    /**
+     * @var int
+     */
     private $status;
+    /**
+     * @var int
+     */
     private $role;
 
     /**
      * User constructor.
-     * @param $id
-     * @param $pseudo
-     * @param $email
-     * @param $password
-     * @param $status
-     * @param $role
+     * @param int $id
+     * @param string $pseudo
+     * @param string $email
+     * @param string $password
+     * @param int $status
+     * @param int $role
      */
     public function __construct($id, $pseudo, $email, $password, $status, $role)
     {
@@ -44,7 +64,7 @@ class User
 
 
     /**
-     * @return mixed
+     * @return int $id
      */
     public function getId()
     {
@@ -52,7 +72,7 @@ class User
     }
 
     /**
-     * @return mixed
+     * @return string $pseudo
      */
     public function getPseudo()
     {
@@ -60,7 +80,7 @@ class User
     }
 
     /**
-     * @param mixed $pseudo
+     * @param string $pseudo
      */
     public function setPseudo($pseudo)
     {
@@ -68,7 +88,7 @@ class User
     }
 
     /**
-     * @return mixed
+     * @return string $email
      */
     public function getEmail()
     {
@@ -76,7 +96,7 @@ class User
     }
 
     /**
-     * @param mixed $email
+     * @param string $email
      */
     public function setEmail($email)
     {
@@ -84,7 +104,7 @@ class User
     }
 
     /**
-     * @return mixed
+     * @return string $password
      */
     public function getPassword()
     {
@@ -92,7 +112,7 @@ class User
     }
 
     /**
-     * @param mixed $password
+     * @param string $password
      */
     public function setPassword($password)
     {
@@ -100,7 +120,7 @@ class User
     }
 
     /**
-     * @return mixed
+     * @return int $status
      */
     public function getStatus()
     {
@@ -108,7 +128,7 @@ class User
     }
 
     /**
-     * @param mixed $status
+     * @param int $status
      */
     public function setStatus($status)
     {
@@ -116,7 +136,7 @@ class User
     }
 
     /**
-     * @return mixed
+     * @return int $role
      */
     public function getRole()
     {
@@ -124,7 +144,7 @@ class User
     }
 
     /**
-     * @param mixed $role
+     * @param int $role
      */
     public function setRole($role)
     {
