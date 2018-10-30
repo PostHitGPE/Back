@@ -9,10 +9,56 @@ use Repository\PostHit;
 use Entities\DataChecker as Data;
 use Entities\Error as Err;
 
+/**
+ * /api is the beginning of routes where it's being catched
+ * Then if follows the type of request and the URL specified
+ */
+
 $app->group('/api', function () use ($app) {
 
     new \Entities\DataBase();
 
+
+    /**
+     * /api/add/post_hit
+     * Method HTTP: POST
+     *
+     * Application/Json expected in request:
+     *
+     * {
+     *  "data":{
+     *      "user":{
+     *          "id": int,
+     *          "pseudo": string ,
+     *          "password": string
+     *      },
+     *      "display_board":{
+     *          "id": int,
+     *      },
+     *      "tags":[{
+     *          "tag": {
+     *              "name": string,
+     *              },
+     *          "tag":{
+     *               ...
+     *          }
+     *      }],
+     *      "post_hit":{
+     *          "latitude": string,
+     *          "longitude": string,
+     *          "message": string,
+     *          "axeXYZ": string
+     *      }
+     *  }
+     * }
+     *
+     * @return Json
+     * Successfull return:
+     * (["code" => 200, "type" => "success", "message" => "Post hit added successfully", "data" => ["last_insert_id" => $postHitId]], 200);
+     * $arrayDisplayBoard: int
+     *
+     * This route add a post_hit depending of the board and insert and link the tags sent with it
+     */
     $app->post('/add/post_hit', function (Request $request, Response $response) {
 
         $json = $request->getBody();
@@ -61,6 +107,55 @@ $app->group('/api', function () use ($app) {
         return $response->withJson(["code" => 200, "type" => "success", "message" => "Post hit added successfully", "data" => ["last_insert_id" => $postHitId]], 200);
     });
 
+    /**
+     * /api/post_hits
+     * Method HTTP: POST
+     *
+     * Application/Json expected in request:
+     *
+     * {
+     *  "data":{
+     *      "user":{
+     *          "id": int,
+     *          "pseudo": string ,
+     *          "password": string
+     *      },
+     *      "display_board":{
+     *          "id": int
+     *      }
+     *  }
+     * }
+     *
+     * @return Application/Json
+     * Successfull return:
+     * (["code" => 200, "type" => "success", "message" => "Post Hits returned successfully for the display board", "data" => $arrayPostHit], 200);
+     * $
+     * {
+     *  "data": {
+     *      "display_board": [{
+     *      "post_hit": {
+     *          "id": string,
+     *          "latitude": string,
+     *          "longitude": string,
+     *          "axeXYZ": string,
+     *          "message": string
+     *          "reputation": string,
+     *          "pseudo": string,
+     *          "tags":[{
+     *              "tag": {
+     *                  "name": string,
+     *                  },
+     *              "tag":{
+     *                  ...
+     *                  }
+     *           }],
+     *       },
+     *       "post_hit": {...},...
+     *      }]
+     *  }
+     * }
+     * This route find all postHits depending of the board and return them
+     */
     $app->post('/post_hits', function (Request $request, Response $response) {
 
         $data = $request->getBody();
@@ -97,6 +192,40 @@ $app->group('/api', function () use ($app) {
         return $response->withJson(["code" => 200, "type" => "success", "message" => "Post Hits returned successfully for the display board", "data" => $arrayPostHit], 200);
     });
 
+    /**
+     * /api/post_hit
+     * Method HTTP: PUT
+     *
+     * Application/Json expected in request:
+     *
+     * {
+     *  "data":{
+     *      "user":{
+     *          "id": int,
+     *          "pseudo": string ,
+     *          "password": string
+     *      },
+     *      "post_hit":{
+     *          "message": string
+     *      },
+     *      "tags":[{
+     *          "tag": {
+     *              "name": string,
+     *              },
+     *          "tag":{
+     *              ...
+     *          }
+     *       }],
+     *  }
+     * }
+     *
+     * @return Application/Json
+     * Successfull return:
+     * (["code" => 200, "type" => "success", "message" => "Post Hit successfully updated!", "data" => ["last_insert_id" => $result]], 200);
+     * $result : int
+     *
+     * This route update a message of a post hit and change the tags if needed
+     */
     $app->put('/post_hit', function (Request $request, Response $response) {
         $data = $request->getBody();
         $data = json_decode($data, true);
@@ -172,7 +301,29 @@ $app->group('/api', function () use ($app) {
     });
 
     /**
-     * used in tests
+     * api/delete/post_hit
+     * Method HTTP: POST
+     *
+     * Application/Json expected in request:
+     *
+     * {
+     *  "data":{
+     *      "user":{
+     *          "id": int,
+     *          "pseudo": string ,
+     *          "password": string
+     *      },
+     *      "post_hit":{
+     *          "id": string
+     *      }
+     *  }
+     * }
+     *
+     * @return Application/Json
+     * Successfull return:
+     * (["code" => 200, "type" => "success", "message" => "User successfully deleted", "data" => []], 200);
+     *
+     * This route delete a postHit by id and user
      */
     $app->post('/delete/post_hit', function (Request $request, Response $response) {
         $data = json_decode($request->getBody(), true);

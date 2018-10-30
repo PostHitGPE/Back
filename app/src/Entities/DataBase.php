@@ -18,7 +18,7 @@ class DataBase {
      * @var bool
      * used to set which environment we use (local or C9 cloud server)
      */
-    private $c9 = true;
+    private $c9 = false;
 
     /**
      * @var array

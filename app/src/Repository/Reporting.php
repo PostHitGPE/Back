@@ -12,10 +12,23 @@ use Entities\DataBase;
 use PDO;
 use PDOException;
 
+/**
+ * Class Reporting
+ * @package Repository
+ * Repository of Reporting where all the methods linked directly to Reporting are codded
+ */
 class Reporting extends DataBase
 {
     const REPORTING_ALREADY_EXISTS = "REPORTING ALREADY EXIST";
 
+    /**
+     * @param array $data
+     * @param PDO::FETCH_OBJ $user
+     * @return string | PDOException | int
+     * This function insert a report if it does not already exist in the DB for the same postHit
+     * depending of the message inserted and the ID of the postHit.
+     * It returns the Id of the reporting inserted when the operation is successful
+     */
     function addReporting($data, $user)
     {
         if($this->reportingAlreadyExists($data["reporting"]["post_hit_id"], $user->id) == self::REPORTING_ALREADY_EXISTS) {
@@ -35,7 +48,14 @@ class Reporting extends DataBase
             }
         }
 
-        function reportingAlreadyExists($postHitId, $userId){
+    /**
+     * @param int $postHitId
+     * @param int $userId
+     * @return string | bool | PDOException
+     * This function verify if a reporting exists depending of the user's id and the postHit's id
+     * It returns a string if it has been found, or a boolean false if not.
+     */
+    function reportingAlreadyExists($postHitId, $userId){
             $db = parent::$dbConnection;
             $stmt = $db->prepare("SELECT COUNT(*) FROM reporting WHERE post_hit_id = ? and user_id = ?");
             $stmt->bindParam(1, $postHitId, PDO::PARAM_INT);

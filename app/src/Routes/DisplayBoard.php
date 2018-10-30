@@ -3,13 +3,48 @@ namespace Routes;
 
 header('Access-Control-Allow-Origin: *');
 
+use JsonSchema\Uri\Retrievers\AbstractRetriever;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
+
+/**
+ * /api is the beginning of routes where it's being catched
+ * Then if follows the type of request and the URL specified
+ */
 
 $app->group('/api', function () use ($app) {
 
     new \Entities\DataBase();
 
+    /**
+     * @api /api/add/board
+     * Method HTTP: POST
+     *
+     * Application/Json expected in request:
+     *
+     * {
+     *  "data":{
+     *      "user":{
+     *          "id": int,
+     *          "pseudo": string ,
+     *          "password": string
+     *      },
+     *      "display_board":{
+     *          "name": string,
+     *          "latitude": string,
+     *          "longitude": string,
+     *          "status" : string,
+     *          "altitude" : string,
+     *          "description" : string
+     *      }
+     *  }
+     * }
+     * @return Json
+     * Successfull return:
+     * ["code" => 200, "type" => "success", "message" => "Display Board added successfully", "data" => ""], 200)
+     *
+     * This route add a board into the database
+     */
     $app->post('/add/board', function (Request $request, Response $response) {
 
         $json = $request->getBody();
@@ -37,6 +72,53 @@ $app->group('/api', function () use ($app) {
         return $response->withJson(["code" => 200, "type" => "success", "message" => "Display Board added successfully", "data" => ""], 200);
     });
 
+    /**
+     * /api/boards
+     * Method HTTP: POST
+     *
+     * Application/Json expected in request:
+     *
+     * {
+     *  "data":{
+     *      "user":{
+     *          "id": int,
+     *          "pseudo": string ,
+     *          "password": string
+     *      },
+     *      "display_board":{
+     *          "name": string,
+     *          "latitude": string,
+     *          "longitude": string,
+     *          "status" : string,
+     *          "altitude" : string,
+     *          "description" : string
+     *      }
+     *  }
+     * }
+     *
+     * @return Json
+     * Successfull return:
+     * ["code" => 200, "type" => "success", "message" => "Display board found", "data" => $arrayDisplayBoard], 200);
+     * $arrayDisplayBoard:
+     * {
+     *  "data":{
+     *      "display_boards":[
+     *          "display_board": {
+     *          "id": int
+     *          "name": string,
+     *          "latitude": string,
+     *          "longitude": string,
+     *          "altitude" : string,
+     *          },
+     *          "display_board":{
+     *              ...
+     *          }...,
+     *          ...
+     *      ]
+     *  }
+     * }
+     * This route find all boards by a perimeter calculated by the parameters sent in the request
+     */
     $app->post('/boards', function (Request $request, Response $response) {
 
         $json = $request->getBody();
