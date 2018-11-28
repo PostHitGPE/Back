@@ -3,6 +3,7 @@ namespace Routes;
 
 header('Access-Control-Allow-Origin: *');
 
+use Entities\StatusType;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 use \Repository\User as User;
@@ -46,7 +47,7 @@ $app->group('/api', function () use ($app) {
             return $response = $response->withJson(["code" => 404, "type" => "error", "message" => "data not found", "data" => []], 404);
         $userRepository = new User();
         try {
-            $res = $userRepository->post($data, Entities\StatusType::STATUS_TYPE_VALIDATED, Data::isSendByAdmin($data));
+            $res = $userRepository->post($data, StatusType::STATUS_TYPE_VALIDATED, Data::isSendByAdmin($data));
         } catch (PDOException $e) {
             return $response = $response->withJson(["code" => 500, "type" => Err::ERROR_PDO, "message" => "The user couldn't be added : ERROR PDO error n°" . $e->getCode() . " " . $e->getMessage(), "data" => []], 404);
         }
@@ -117,7 +118,7 @@ $app->group('/api', function () use ($app) {
         }
         $data["user"] = $data["userToDelete"];
         try {
-            $res = $userRepository->delete($data, \Entities\StatusType::STATUS_TYPE_VALIDATED);
+            $res = $userRepository->delete($data, StatusType::STATUS_TYPE_VALIDATED);
         } catch (PDOException $e) {
             return $response = $response->withJson(["code" => 500, "type" => Err::ERROR_PDO, "message" => "The user couldn't be deleted : ERROR PDO error n°" . $e->getCode() . " " . $e->getMessage(), "data" => []], 500);
         }

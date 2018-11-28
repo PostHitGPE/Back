@@ -20,7 +20,7 @@ class PosthitTest extends \PHPUnit_Framework_TestCase
     }
     private function getRootUrl($c9 = false)
     {
-        return ($c9) ? "https://post-hit-posthit.c9users.io/app/public/api/" : "http://localhost/pli/PostHitAPI/public/api/";
+        return ($c9) ? "https://post-hit-posthit.c9users.io/app/public/api/" : "localhost/Post-hit/API/app/public/index.php/api/";
     }
 
     private function ExecuteTest($method, $uri, $data) {
@@ -81,7 +81,7 @@ class PosthitTest extends \PHPUnit_Framework_TestCase
         $template = Request::init()      // Alternative to Request::post/get/put/post/delete
             ->withoutStrictSsl()        // Ease up on some of the SSL checks
             //->expectsHtml()             // Expect HTML responses
-            ->expectsJson()
+            //->expectsJson()
             //->sendsType(Mime::JSON)
             ;    // http://phphttpclient.com/docs/class-Httpful.Mime.html
         Request::ini($template);
@@ -100,7 +100,7 @@ class PosthitTest extends \PHPUnit_Framework_TestCase
     public function testPosthitApp()
     {
         // set to true to test distant api
-        $c9 = true;
+        $c9 = false;
         $json = file_get_contents($this->getRootDir() . '/model.json');
         echo "\nTEST MODEL:\n" . $json;
         $data = $this->parseModelToTestData($json);
@@ -132,7 +132,7 @@ class PosthitTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(200,  $response->code);
         
         // DELETE
-        $data = $this->setPostHitId($data, 14); //$response->body->data->last_insert_id
+        $data = $this->setPostHitId($data, $response->body->data->last_insert_id);
         $uri = $this->getRootUrl($c9) . "delete/post_hit";
         $this->assertEquals(200, $this->ExecuteTest("POST", $uri, $data)->code);
 
