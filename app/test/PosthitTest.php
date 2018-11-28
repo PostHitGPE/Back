@@ -100,7 +100,7 @@ class PosthitTest extends \PHPUnit_Framework_TestCase
     public function testPosthitApp()
     {
         // set to true to test distant api
-        $c9 = false;
+        $c9 = true;
         $json = file_get_contents($this->getRootDir() . '/model.json');
         echo "\nTEST MODEL:\n" . $json;
         $data = $this->parseModelToTestData($json);
@@ -132,7 +132,6 @@ class PosthitTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(200,  $response->code);
         
         // DELETE
-        $data = $this->setPostHitId($data, $response->body->data->last_insert_id);
         $uri = $this->getRootUrl($c9) . "delete/post_hit";
         $this->assertEquals(200, $this->ExecuteTest("POST", $uri, $data)->code);
 
